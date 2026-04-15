@@ -5,12 +5,29 @@ Open-source JSON configuration data originating from
 (BIPCircle, ID-Circle). Role taxonomies, audit-action vocabularies,
 JSON Schemas, and other non-proprietary configuration data.
 
+## Current state (2026-04-16)
+
+**This repo is scaffolding — no config files are published yet.**
+
+All BIPCircle JSON configs are currently flagged `oss:false` pending
+Nick Vermeulen's ecosystem-wide review of what Lazy-Jack Ltd wants
+to publish alongside OpenKYCAML. The scaffolding (README, Makefile,
+CI, QuickType examples) is in place so that the moment approvals
+land, a single `.meta.json` flip-plus-sync publishes the first wave
+of configs.
+
+The private mirror at `Lazy-Jack-Ltd/ID-Circle-Core/JSON/BIPCircle-Configs/`
+and `.../JSON/BIPCircle-Schemas/` carries all 18 current configs.
+Once Nick approves specific files for public release, they'll
+appear here via `npm run sync-configs` from the BIPCircle repo.
+
 ## Why this repo exists
 
 Lazy-Jack Ltd's compliance + financial-platform ecosystem maintains
 many JSON configurations that are structurally **generic** — role
 name vocabularies, audit event taxonomies, JSON Schema contracts —
-and therefore safe to open-source. Keeping them here lets:
+and some subset of these is safe to open-source. Keeping them here
+lets:
 
 - Downstream consumers (mobile apps, SDKs, integrators) auto-generate
   type-safe models from the schemas (see Generating models below).
@@ -18,10 +35,11 @@ and therefore safe to open-source. Keeping them here lets:
   Lazy-Jack's platforms use, aiding compatibility.
 - Contributions flow back through a public review process.
 
-**Proprietary** configurations that reveal multi-step flow
-architecture (e.g., saga lifecycle definitions) stay in the
-private mirror. Schemas for those flows are still public because
-schemas are generic contracts.
+**Proprietary** configurations stay in the private mirror
+`Lazy-Jack-Ltd/ID-Circle-Core`. Per the fail-closed default, a config
+is private unless its `.meta.json` in the BIPCircle source repo
+explicitly declares `oss: true` with a `public_target`. The scaffolding
+below is ready to receive whichever files get approved.
 
 ## Layout
 

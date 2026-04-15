@@ -1,0 +1,53 @@
+name: validate-schemas
+
+on:
+  pull_request:
+    paths:
+      - 'JSON/**'
+      - 'Makefile'
+      - '.github/workflows/validate-schemas.yml'
+  push:
+    branches: [main]
+
+jobs:
+  quicktype-validate:
+    name: Schemas are QuickType-consumable
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Validate every schema parses via QuickType
+        run: make validate-schemas
+
+  data-validates-against-schema:
+    name: Data files validate against their schema
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install ajv-cli
+        run: npm install -g ajv-cli ajv-formats
+      - name: Validate Roles data
+        run: |
+          for data in JSON/Roles/*.json; do
+            base=$(basename "$data" .json)
+            schema="JSON/Schemas/roles.schema.json"
+            if [ -f "$schema" ]; then
+              echo "  $data against $schema"
+              ajv validate -s "$schema" -d "$data" --spec=draft2020 || exit 1
+            fi
+          done
+      - name: Validate Audit-Actions data
+        run: |
+          for data in JSON/Audit-Actions/*.json; do
+            base=$(basename "$data" .json)
+            schema="JSON/Schemas/auditDefinitions.schema.json"
+            if [ -f "$schema" ]; then
+              echo "  $data against $schema"
+              ajv validate -s "$schema" -d "$data" --spec=draft2020 || exit 1
+            fi
+          done
